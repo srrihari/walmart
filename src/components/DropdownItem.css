@@ -1,0 +1,42 @@
+.dropdown-submenu-wrapper {
+  position: relative;
+  display: block;
+  white-space: nowrap;
+}
+
+.dropdown-submenu-label {
+  padding: 6px 16px;
+  cursor: pointer;
+  color: grey;
+}
+
+.submenu-right {
+  position: absolute;
+  top: 0;
+  left: 100%;
+  min-width: 180px;
+  max-height: 300px; /* Set your desired max height */
+  overflow-y: auto;  /* Enable vertical scroll */
+  background-color: white;
+  z-index: 1050;
+  border-radius: 4px;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Optional: custom scrollbar styling */
+.submenu-right::-webkit-scrollbar {
+  width: 6px;
+}
+
+.submenu-right::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 3px;
+}
+
+
+.dropdown-item{
+    color: grey;
+}

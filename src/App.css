@@ -1,0 +1,14 @@
+.nav{
+  max-width:  98vw;
+  justify-self: center;
+  border-radius: 50px;
+  margin-top: 10px;
+  margin-left: 3px;
+
+}
+
+.navdropItem{
+  color: rgb(102, 99, 99);
+}
+
+
