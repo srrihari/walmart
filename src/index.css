@@ -237,3 +237,81 @@
   padding-top: 100px;
   font-size: 18px;
 }
+
+/* Fonts and layout */
+ .app-container {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f2f3f7;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Card container */
+.card {
+  background-color: white;
+  padding: 30px;
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  max-width: 800px;
+  width: 100%;
+  text-align: center;
+}
+
+/* Title */
+.card h1 {
+  margin-bottom: 20px;
+  font-size: 2rem;
+  color: #333;
+}
+
+
+
+/* Overlay icons for muted mic or camera */
+
+
+/* Buttons */
+.buttons {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-bottom: 15px;
+  flex-wrap: wrap;
+}
+
+.btn {
+  padding: 10px 20px;
+  font-size: 16px;
+  font-weight: 600;
+  background-color: #0077ff;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.btn:hover {
+  background-color: #005fe0;
+}
+
+.small {
+  font-size: 14px;
+  padding: 8px 16px;
+}
+
+/* End button special style */
+.end-btn {
+  background-color: #d62828;
+}
+
+.end-btn:hover {
+  background-color: #b31e1e;
+}
+
+/* Status message */
+.status {
+  margin-top: 10px;
+  font-weight: bold;
+  color: #333;
+}

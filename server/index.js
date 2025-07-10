@@ -344,7 +344,6 @@ app.put("/user/budget", async (req, res) => {
 
 app.post("/cart/add", async (req, res) => {
   const { user_id, category, product_id, quantity } = req.body;
-  console.log(user_id, category, product_id, quantity);
 
   try {
     const { error } = await supabase
@@ -401,7 +400,6 @@ app.delete("/cart/:cartItemId", async (req, res) => {
 
     if (error) throw error;
 
-    console.log("Deleted:", data);
     res.json({ message: "Item removed from cart" });
   } catch (err) {
     console.error("Delete error:", err);

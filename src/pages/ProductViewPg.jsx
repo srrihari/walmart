@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { FaCartPlus } from "react-icons/fa";
+import { IoVideocam } from "react-icons/io5";
 
 export default function ProductViewPg() {
+  const navigate = useNavigate();
   const { category, id } = useParams();
   const [product, setProduct] = useState(null);
   const [adding, setAdding] = useState(false);
@@ -33,17 +36,11 @@ export default function ProductViewPg() {
 
     try {
       let mappedCategory = category;
-      if (category === "school_utensils") {
-        mappedCategory = "schoolutensils";
-      } else if (category === "Vehicle_care") {
-        mappedCategory = "vehiclecare";
-      } else if (category === "body_care_diet") {
-        mappedCategory = "bodycarediet";
-      } else if (category === "cloth_accessories") {
-        mappedCategory = "cloth";
-      } else if (category === "Groceries") {
-        mappedCategory = "foodgroceries";
-      }
+      if (category === "school_utensils") mappedCategory = "schoolutensils";
+      else if (category === "Vehicle_care") mappedCategory = "vehiclecare";
+      else if (category === "body_care_diet") mappedCategory = "bodycarediet";
+      else if (category === "cloth_accessories") mappedCategory = "cloth";
+      else if (category === "Groceries") mappedCategory = "foodgroceries";
 
       await axios.post("http://localhost:3000/cart/add", {
         user_id: parseInt(userId),
@@ -61,67 +58,125 @@ export default function ProductViewPg() {
     }
   };
 
-  if (!product)
-    return <div style={{ paddingTop: "100px" }}>Loading product...</div>;
+  if (!product) return <div style={{ paddingTop: "100px" }}>Loading...</div>;
 
   return (
     <div
-      style={{ paddingTop: "100px", paddingLeft: "50px", maxWidth: "800px" }}
+      style={{
+        display: "flex",
+        padding: "100px 50px",
+        gap: "50px",
+        alignItems: "flex-start",
+        fontFamily: "Arial, sans-serif",
+      }}
     >
-      <h1>{product.name}</h1>
-      <img
-        src={product.image_url}
-        alt={product.name}
-        width="300"
-        style={{ borderRadius: "8px", marginBottom: "20px" }}
-      />
-      <p>
-        <strong>ID:</strong> {product.id}
-      </p>
-      <p>
-        <strong>Seller:</strong> {product.seller_name}
-      </p>
-      <p>
-        <strong>Category:</strong> {product.category}
-      </p>
-      <p>
-        <strong>Sub-category:</strong> {product.sub_category}
-      </p>
-      <p>
-        <strong>Description:</strong> {product.description}
-      </p>
-      <p>
-        <strong>Price:</strong> Rs.{product.price}
-      </p>
-      <p>
-        <strong>Rating:</strong> {product.rating}
-      </p>
-      <p>
-        <strong>Reviews:</strong> {product.reviews}
-      </p>
-      <p>
-        <strong>Stock Status:</strong>{" "}
-        {product.in_stock ? "In Stock" : "Out of Stock"}
-      </p>
-      <p>
-        <strong>Shipping:</strong>{" "}
-        {product.free_shipping ? "Free Shipping Available" : "No Free Shipping"}
-      </p>
+      {/* Left Column - Image */}
+      <div>
+        <img
+          src={product.image_url}
+          alt={product.name}
+          width="350"
+          style={{ borderRadius: "8px" }}
+        />
+      </div>
 
+      {/* Right Column - Details */}
+      <div style={{ maxWidth: "600px" }}>
+        <h1
+          style={{
+            fontSize: "28px",
+            marginBottom: "10px",
+            fontWeight: "bolder",
+          }}
+        >
+          {product.name}
+        </h1>
+
+        {product.seller_name && (
+          <p>
+            <strong>Seller: </strong>
+            {product.seller_name === "Walmart.com"
+              ? "Walmart"
+              : product.seller_name}
+          </p>
+        )}
+        <p>
+          <strong>Category:</strong> {product.category}
+        </p>
+        <p>
+          <strong>Sub-category:</strong> {product.sub_category}
+        </p>
+        {product.description && (
+          <p>
+            <strong>Description:</strong> {product.description}
+          </p>
+        )}
+        <h2 style={{ color: "#B12704", marginTop: "15px" }}>
+          ₹{product.price.toLocaleString("en-IN")}
+        </h2>
+
+        <p>
+          <strong>Rating:</strong> {product.rating}
+        </p>
+        <p>
+          <strong>Reviews:</strong> {product.reviews}
+        </p>
+        <p>
+          <strong>Stock Status:</strong>{" "}
+          {product.in_stock ? (
+            "In Stock"
+          ) : (
+            <span style={{ color: "red" }}>Out of Stock</span>
+          )}
+        </p>
+        <p>
+          <strong>Shipping:</strong>{" "}
+          {product.free_shipping
+            ? "Free Shipping Available"
+            : "No Free Shipping"}
+        </p>
+
+        <button
+          onClick={handleAddToCart}
+          disabled={!product.in_stock || adding}
+          style={{
+            marginTop: "20px",
+            padding: "12px 24px",
+            fontSize: "16px",
+            backgroundColor: "#ffa41c",
+            color: "white",
+            border: "none",
+            borderRadius: "8px",
+            cursor: product.in_stock ? "pointer" : "not-allowed",
+            fontWeight: "bold",
+          }}
+        >
+          {adding ? (
+            "Adding..."
+          ) : (
+            <>
+              <FaCartPlus style={{ marginRight: "8px" }} />
+              Add to Cart
+            </>
+          )}
+        </button>
+      </div>
       <button
-        onClick={handleAddToCart}
+        onClick={() => {
+          localStorage.setItem("cammerceProduct", JSON.stringify(product));
+          navigate(`/call`);
+        }}
         style={{
-          marginTop: "20px",
-          padding: "10px 20px",
-          fontSize: "16px",
-          backgroundColor: "#007bff",
+          padding: "5px 9px",
+          backgroundColor: "#28a745",
           color: "white",
           border: "none",
-          borderRadius: "5px",
+          borderRadius: "8px",
           cursor: "pointer",
         }}
       >
-        {adding ? "Adding..." : "Add to Cart"}
+        <IoVideocam style={{ marginRight: "8px" }} />
+        Cammerce
       </button>
     </div>
   );

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Heading from "./Heading";
+import Recommend from "./Recommend";
 
 export default function Cart() {
   const [cartItems, setCartItems] = useState([]);
@@ -187,6 +188,7 @@ export default function Cart() {
           </button>
         </div>
       </div>
+      <Recommend />
     </div>
   );
 }
