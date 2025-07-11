@@ -66,14 +66,13 @@ function ProdGest() {
   };
 
   return (
-    <div>
+    <div style={{ marginTop: "100px" }}>
       {/* <img
         src="public/images/MealGenie.png"
         style={{ height: "80px", width: "70px" }}
       ></img> */}
       <h1
         style={{
-          color: "#E9F5BE",
           margin: "0px",
           textShadow: `
       -1px -1px 0 black,
@@ -86,6 +85,8 @@ function ProdGest() {
           fontStyle: "italic",
           fontSize: "60px",
           padding: "0px",
+          textAlign: "center",
+          color: "#fff085",
         }}
       >
         ProdGestAI

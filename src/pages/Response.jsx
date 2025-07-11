@@ -71,7 +71,10 @@ function QueryResponse(props) {
   };
 
   return (
-    <div className="query-response-container">
+    <div
+      className="query-response-container"
+      style={{ width: "800px", height: "500px" }}
+    >
       {/* Transcription Box */}
       {props.transcription && (
         <div
@@ -155,7 +158,7 @@ function QueryResponse(props) {
           padding: "20px",
           borderRadius: "12px",
           marginTop: "10px",
-          maxHeight: "450px",
+          maxHeight: "420px",
           overflowY: "auto",
         }}
       >

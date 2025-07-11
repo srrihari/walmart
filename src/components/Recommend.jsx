@@ -85,7 +85,7 @@ export default function Recommend() {
     );
 
   return (
-    <div style={{ padding: "16px", paddingTop: "100px", marginTop: "100px" }}>
+    <div style={{ padding: "16px", paddingTop: "100px" }}>
       <Heading category={"Recommended for You"} />
       {Object.entries(recommended).map(([categoryKey, products]) => (
         <div key={categoryKey} style={{ marginBottom: "40px" }}>

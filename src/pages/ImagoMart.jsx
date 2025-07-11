@@ -56,13 +56,43 @@ function ImagoMart() {
   };
 
   return (
-    <div className="ai-query-bot-container" style={{ marginTop: "100px" }}>
-      <div className="query-input-container" style={{ margin: "0" }}>
-        <div className="image-audio-container">
+    <div
+      className="ai-query-bot-container"
+      style={{ marginTop: "100px", gap: "10px" }}
+    >
+      <div
+        className="query-input-container"
+        style={{ margin: "0", maxWidth: "400px" }}
+      >
+        <div
+          className="image-audio-container"
+          style={{ marginTop: "-20px", marginRight: "0" }}
+        >
           <ImageUpload onImageSelect={setImageFile} />
-          <AudioRecord onTranscriptionReady={handleTranscription} />
+          <AudioRecord
+            onTranscriptionReady={handleTranscription}
+            customStyle={{
+              maxWidth: "600px",
+              minHeight: "200px",
+              background: "#872341",
+              margin: "0px",
+              padding: 0,
+            }}
+          />
         </div>
-
+      </div>
+      <div>
+        <div style={{ overflow: "auto" }}>
+          <div className="Response-container">
+            <QueryResponse
+              response={response}
+              transcription={transcription}
+              lang="en-IN"
+              warning={response?.warning}
+              error={response?.error}
+            />
+          </div>
+        </div>
         <div className="input-submit-container">
           <input
             type="text"
@@ -70,23 +100,13 @@ function ImagoMart() {
             onChange={(event) => setText(event.target.value)}
             required
             className="query-input-text-containter"
+            style={{ marginLeft: "95px", background: "#872341" }}
           />
           <SendIcon
             onClick={queryResponse}
             className="query-submit-button"
-            sx={{ fontSize: 40, color: "red" }}
+            sx={{ fontSize: 40, color: "#872341" }}
             role="button"
-          />
-        </div>
-      </div>
-      <div style={{ overflow: "auto" }}>
-        <div className="Response-container">
-          <QueryResponse
-            response={response}
-            transcription={transcription}
-            lang="en-IN"
-            warning={response?.warning}
-            error={response?.error}
           />
         </div>
       </div>

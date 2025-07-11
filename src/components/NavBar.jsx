@@ -11,6 +11,7 @@ import { CgProfile } from "react-icons/cg";
 import DropdownItem from "./DropdownItem";
 import { AuthContext } from "../auth";
 import "bootstrap/dist/css/bootstrap.min.css";
+import { FaSearch } from "react-icons/fa";
 
 function NavBar() {
   const loc = useLocation();
@@ -398,6 +399,24 @@ function NavBar() {
               </Nav.Link>
             </div>
           </Nav>
+          <Nav.Link
+            as={Link}
+            to="/prodgest"
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              color: "white",
+            }}
+          >
+            <FaSearch
+              style={{
+                color: "white",
+                fontSize: "1.5rem",
+                marginRight: "20px",
+              }}
+            />
+          </Nav.Link>
         </Navbar.Collapse>
       </Container>
     </Navbar>

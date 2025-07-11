@@ -39,7 +39,6 @@
   margin-right: 4px;
 }
 
-
 .product-title {
   color: #1f2937;
   margin-bottom: 4px;
@@ -77,7 +76,6 @@
   font-size: 11px;
   margin: 0;
 }
-
 
 /* Login.css */
 
@@ -239,7 +237,7 @@
 }
 
 /* Fonts and layout */
- .app-container {
+.app-container {
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   background-color: #f2f3f7;
   display: flex;
@@ -265,10 +263,7 @@
   color: #333;
 }
 
-
-
 /* Overlay icons for muted mic or camera */
-
 
 /* Buttons */
 .buttons {
@@ -332,8 +327,8 @@
 }
 
 .image-box {
-  width: 450px;
-  height: 400px;
+  width: 300px;
+  height: 300px;
   border: 2px solid #ffffff;
   display: flex;
   justify-content: center;
@@ -406,14 +401,14 @@
   height: 650px;
   width: 500px;
   background: #872341;
-  border: 2px solid white;
+  border: 3px solid black;
   border-radius: 20px;
   padding: 10px;
+  transition: 0.3s;
 }
 .query-response-container:hover {
-  border: none;
   background-color: #872341;
-  box-shadow: 5px 10px 8px 5px rgba(0, 0, 0, 0.3);
+  box-shadow: 5px 10px 8px 5px rgba(19, 19, 19, 0.3);
 }
 /* .ai-query-bot-container {
   display: flex;
@@ -435,7 +430,6 @@
   padding: 10px; /* padding around the container */
   box-sizing: border-box;
   width: 100%;
-
 }
 
 .response-box {
@@ -500,7 +494,6 @@
 .meal-response-container::-webkit-scrollbar {
   width: 10px; /* 👈 Always show scrollbar with width */
 }
-
 
 .meal-response-container::-webkit-scrollbar-thumb {
   background-color: #dbc6bb;

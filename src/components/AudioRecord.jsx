@@ -95,50 +95,50 @@ function AudioRecord(props) {
       setIsPlaying(!isPlaying);
     }
   };
+  const baseStyle = hover
+    ? {
+        width: "100%",
+        maxWidth: "370px",
+        minHeight: "400px",
+        margin: "20px auto",
+        paddingLeft: "20px",
+        background: "#fff085",
+        marginBottom: "15px",
+        border: "3px solid black",
+        borderRadius: "20px",
+        boxShadow: "5px 10px 8px 5px rgba(0, 0, 0, 0.3)",
+      }
+    : {
+        width: "100%",
+        maxWidth: "370px",
+        minHeight: "400px",
+        margin: "20px auto",
+        paddingLeft: "20px",
+        background: "#fff085",
+        marginBottom: "15px",
+        borderRadius: "20px",
+        border: "3px solid black",
+        transition: "0.3s",
+      };
 
   return (
     <div
       className="Audio-box"
       onMouseOver={() => setHover(true)}
       onMouseOut={() => setHover(false)}
-      style={
-        hover
-          ? {
-              width: "100%",
-              maxWidth: "370px",
-              minHeight: "400px",
-              margin: "20px auto", // ✅ horizontally center it
-              paddingLeft: "20px",
-              background: "#fff085",
-              marginBottom: "15px",
-              border: "3px solid black",
-              borderRadius: "20px",
-              boxShadow: "5px 10px 8px 5px rgba(0, 0, 0, 0.8)",
-            }
-          : {
-              width: "100%",
-              maxWidth: "370px",
-              minHeight: "400px",
-              margin: "20px auto", // ✅ horizontally center it
-              paddingLeft: "20px",
-              background: "#fff085",
-              marginBottom: "15px",
-              borderRadius: "20px",
-              border: "3px solid black",
-              transition: "0.3s",
-              boxShadow: "5px 10px 8px 5px rgba(0, 0, 0, 0.8)",
-            }
-      }
+      style={{
+        ...baseStyle,
+        ...(props.customStyle || {}),
+      }}
     >
       <center>
         <button
           onClick={isRecording ? stopRecording : startRecording}
           style={{
-            padding: "10px 20px",
+            padding: "10px 10px",
             cursor: "pointer",
             background: "none",
             border: "0px",
-            margin: "60px",
           }}
         >
           {isRecording ? (
@@ -196,7 +196,8 @@ function AudioRecord(props) {
               fontWeight: "400",
               fontStyle: " normal",
               color: "black",
-              fontSize: "28px",
+              fontSize: "20px",
+              textAlign: "center",
             }}
           >
             Record a Audio query
