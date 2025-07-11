@@ -55,7 +55,7 @@ export default function CallIframe() {
       {/* Left: Product Info */}
       <div
         style={{
-          width: "200px",
+          width: "275px",
           padding: "20px",
           borderRight: "1px solid #ccc",
           backgroundColor: "#f9f9f9",
@@ -73,7 +73,11 @@ export default function CallIframe() {
                 marginBottom: "15px",
               }}
             />
-            <h2 style={{ marginBottom: "10px" }}>{product.name}</h2>
+            <strong style={{ marginBottom: "10px", fontSize: "medium" }}>
+              {product.name}
+            </strong>
+            <br />
+            <br />
             <p>
               <strong>Price:</strong> ₹{product.price}
             </p>

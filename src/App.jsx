@@ -20,6 +20,10 @@ import ProductViewPg from "./pages/ProductViewPg.jsx";
 import Call from "./pages/Call.jsx";
 import CallIframe from "./pages/CallIframe";
 import FamilyDashboard from "./pages/FamilyDashboard.jsx";
+import TastiAi from "./pages/TastiAi.jsx";
+import ProdGest from "./pages/ProdGest.jsx";
+import ProDoubt from "./pages/ProDoubt.jsx";
+import ImagoMart from "./pages/ImagoMart.jsx";
 
 function App() {
   return (
@@ -53,6 +57,10 @@ function App() {
           <Route path="/call" element={<CallIframe />} />
           <Route path="/product/:category/:id" element={<ProductViewPg />} />
           <Route path="/familydashboard" element={<FamilyDashboard />} />
+          <Route path="/tastiai" element={<TastiAi />} />
+          <Route path="/prodgest" element={<ProdGest />} />
+          <Route path="/prodoubt" element={<ProDoubt />} />
+          <Route path="/imagomart" element={<ImagoMart />} />
         </Routes>
       </AuthProvider>
     </Router>
