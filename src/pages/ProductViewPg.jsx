@@ -139,16 +139,13 @@ export default function ProductViewPg() {
           <button
             onClick={handleAddToCart}
             disabled={!product.in_stock || adding}
+            className="prodview-button"
             style={{
               marginTop: "20px",
               padding: "12px 24px",
               fontSize: "16px",
-              backgroundColor: "#ffa41c",
-              color: "white",
-              border: "none",
-              borderRadius: "8px",
+              backgroundColor: "#ff6f00ff",
               cursor: product.in_stock ? "pointer" : "not-allowed",
-              fontWeight: "bold",
             }}
           >
             {adding ? (
@@ -162,16 +159,12 @@ export default function ProductViewPg() {
           </button>
           <Link to={`/product/${category}/${id}/faq`}>
             <button
+              className="prodview-button"
               style={{
                 marginTop: "20px",
                 padding: "12px 24px",
                 fontSize: "16px",
-                backgroundColor: "#ff511cff",
-                color: "white",
-                border: "none",
-                borderRadius: "8px",
-                cursor: product.in_stock ? "pointer" : "not-allowed",
-                fontWeight: "bold",
+                backgroundColor: "#3f6890ff",
               }}
             >
               <div
@@ -194,13 +187,10 @@ export default function ProductViewPg() {
           localStorage.setItem("cammerceProduct", JSON.stringify(product));
           navigate(`/call`);
         }}
+        className="prodview-button"
         style={{
-          padding: "5px 9px",
+          padding: "10px 16px",
           backgroundColor: "#28a745",
-          color: "white",
-          border: "none",
-          borderRadius: "8px",
-          cursor: "pointer",
         }}
       >
         <IoVideocam style={{ marginRight: "8px" }} />

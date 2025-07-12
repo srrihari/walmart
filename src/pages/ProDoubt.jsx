@@ -40,7 +40,7 @@ function ProDoubt() {
     >
       <h1
         style={{
-          color: "#D9A299",
+          color: "#90D1CA",
           textShadow: `
             -1px -1px 0 black,
              1px -1px 0 black,
@@ -64,7 +64,10 @@ function ProDoubt() {
       >
         <div className="audio-response-container">
           <div style={{ marginBottom: "20px", textAlign: "center" }}>
-            <AudioRecord onTranscriptionReady={handleTranscription} />
+            <AudioRecord
+              onTranscriptionReady={handleTranscription}
+              customStyle={{ background: "#90D1CA" }}
+            />
           </div>
 
           <div
@@ -74,7 +77,7 @@ function ProDoubt() {
               padding: "10px",
               height: "400px",
               overflowY: "auto",
-              backgroundColor: "#fff085",
+              backgroundColor: "#90D1CA",
               marginBottom: "20px",
               marginLeft: "20px",
               width: "1150px",
@@ -100,7 +103,7 @@ function ProDoubt() {
               borderRadius: "8px",
               fontSize: "16px",
               border: "1px solid #ccc",
-              background: "#fff085",
+              background: "#90D1CA",
               border: "3px solid black",
               height: "40px",
             }}
@@ -110,7 +113,7 @@ function ProDoubt() {
             className="query-submit-button"
             sx={{
               fontSize: 40,
-              color: "#D9A299",
+              color: "#90D1CA",
               cursor: "pointer",
               textShadow: "2px 2px 5px rgba(0, 0, 0, 0.8)",
               filter: "drop-shadow(2px 3px 3px rgba(0, 0, 0, 0.8))",
