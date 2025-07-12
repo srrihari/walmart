@@ -385,6 +385,7 @@ app.post("/api/grocery-search", async (req, res) => {
         product: matchedItem || null,
       });
     }
+    console.log(results);
 
     res.json({ matches: results });
   } catch (err) {
@@ -622,7 +623,7 @@ app.post("/api/product-search", async (req, res) => {
       results.map((item) => item.id)
     );
     console.log("✅ Fetched Products:", results.length);
-    res.json({ results });
+    res.json({ results, matched: { table: table_name } });
   } catch (err) {
     console.error("❌ Supabase Fetch Error:", err.message);
     res.status(500).json({ error: "Failed to fetch products" });

@@ -1,7 +1,11 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
+import ProductCard from "../components/ProductCard";
+import { useNavigate } from "react-router-dom";
 
 function ProdResponse({ response, onRegenerate, scrollRef, hasQueried }) {
   const [hovered, setHovered] = useState(false);
+  const navigate = useNavigate();
+
   const scrollToTop = () => {
     setTimeout(() => {
       if (scrollRef?.current) {
@@ -16,7 +20,11 @@ function ProdResponse({ response, onRegenerate, scrollRef, hasQueried }) {
     scrollToTop();
   }, [response]);
 
-  if (hasQueried && (!response || response.length === 0)) {
+  // 🧠 Extract actual product list & matched table name
+  const productList = response?.results || [];
+  const matchedCategory = response?.matched?.table || "electronics";
+
+  if (hasQueried && productList.length === 0) {
     return (
       <p style={{ fontStyle: "italic", color: "gray" }}>
         No matching products found.
@@ -25,11 +33,58 @@ function ProdResponse({ response, onRegenerate, scrollRef, hasQueried }) {
   }
 
   if (!hasQueried) {
-    return null; // 👈 Don’t show anything before first search
+    return null;
   }
 
+  const mapCategory = (category) => {
+    const lower = (category || "").toLowerCase();
+    const map = {
+      groceries: "foodgroceries",
+      school_utensils: "schoolutensils",
+      vehicle_care: "vehiclecare",
+      body_care_diet: "bodycarediet",
+      cloth_accessories: "cloth",
+    };
+    return map[lower] || lower;
+  };
+
+  const handleAddToCart = async (product, rawCategory) => {
+    const userId = localStorage.getItem("userId");
+    if (!userId) {
+      alert("Please log in to add items to your cart.");
+      return;
+    }
+
+    const category = mapCategory(rawCategory);
+
+    try {
+      await fetch("http://localhost:3000/cart/add", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          user_id: parseInt(userId),
+          category,
+          product_id: product.id,
+          quantity: 1,
+        }),
+      });
+
+      alert("Item added to cart!");
+    } catch (err) {
+      console.error("Failed to add to cart:", err);
+      alert("Error adding to cart");
+    }
+  };
+
+  const handleProductClick = (product, category) => {
+    navigate(`/product/${category}/${product.id}`);
+  };
+
   return (
-    <div className="product-response" style={{ height: "300px" }}>
+    <div
+      className="product-response"
+      style={{ height: "300px", width: "900px" }}
+    >
       <h3
         style={{
           fontWeight: "bold",
@@ -41,92 +96,47 @@ function ProdResponse({ response, onRegenerate, scrollRef, hasQueried }) {
         Matching Products 🛍️
       </h3>
 
-      <div style={{ display: "flex", flexDirection: "column" }}>
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
-            gap: "1.5rem",
-            marginTop: "1rem",
-            height: "100px",
-          }}
-        >
-          {response.map((product) => (
+      <div style={{ display: "flex", flexWrap: "wrap", gap: "1rem" }}>
+        {productList.map((product) => {
+          const rawCategory = product.category || matchedCategory; // ✅ fallback to matched.table
+          const mappedCategory = mapCategory(rawCategory); // for cart only
+
+          return (
             <div
               key={product.id}
-              style={{
-                border: "1px solid #ccc",
-                borderRadius: "10px",
-                padding: "10px",
-                backgroundColor: "#fffce7",
-                boxShadow: "2px 2px 5px rgba(0,0,0,0.2)",
-                transition: "transform 0.2s ease-in-out",
-              }}
-              onMouseEnter={(e) =>
-                (e.currentTarget.style.transform = "scale(1.02)")
-              }
-              onMouseLeave={(e) =>
-                (e.currentTarget.style.transform = "scale(1)")
-              }
+              onClick={() => handleProductClick(product, rawCategory)}
+              style={{ cursor: "pointer" }}
             >
-              <img
-                src={product.image || "/fallback.png"}
+              <ProductCard
+                image={product.image || "/fallback.png"}
                 alt={product.name}
-                style={{
-                  width: "100%",
-                  height: "150px",
-                  objectFit: "cover",
-                  borderRadius: "8px",
+                price={`₹${product.price}`}
+                originalPrice={`₹${product.original_price || product.price}`}
+                savings={`₹${(
+                  (product.original_price || product.price) - product.price
+                ).toFixed(2)}`}
+                title={product.name}
+                rating={Math.round(product.rating || 4)}
+                reviews={product.reviews || 0}
+                membershipNote={
+                  product.free_shipping ? "Free Shipping Available" : ""
+                }
+                availability={[
+                  product.in_stock
+                    ? "Available <strong>in stock</strong>"
+                    : "Out of stock",
+                  product.free_shipping
+                    ? "Free <strong>shipping</strong>"
+                    : "Shipping not available",
+                ]}
+                onAddToCart={(e) => {
+                  e.stopPropagation();
+                  handleAddToCart(product, rawCategory);
                 }}
               />
-              <h4
-                style={{
-                  margin: "10px 0 5px",
-                  fontSize: "1.1rem",
-                  fontWeight: "600",
-                  color: "#222",
-                }}
-              >
-                {product.name}
-              </h4>
-              <p style={{ margin: 0, color: "#444", fontSize: "0.95rem" }}>
-                Category: <strong>{product.category}</strong>
-              </p>
-              <p
-                style={{
-                  fontWeight: "bold",
-                  fontSize: "1.1rem",
-                  color: "#C0392B",
-                }}
-              >
-                ₹ {product.price}
-              </p>
             </div>
-          ))}
-        </div>
-
-        {/* <div>
-          <button
-            onClick={onRegenerate}
-            style={{
-              padding: "8px 18px",
-              fontSize: "1rem",
-              fontWeight: "500",
-              borderRadius: "8px",
-              backgroundColor: "#FF5F5F",
-              color: "#fff",
-              border: "none",
-              cursor: "pointer",
-              boxShadow: "3px 3px 0px #222",
-              transform: hovered ? "translate(-4px, -4px)" : "translate(0, 0)",
-              transition: "transform 0.2s ease",
-            }}
-            onMouseEnter={() => setHovered(true)}
-            onMouseLeave={() => setHovered(false)}
-          >
-            🔁 Regenerate Suggestions
-          </button>
-        </div> */}
+          );
+        })}
       </div>
     </div>
   );

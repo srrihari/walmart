@@ -36,10 +36,11 @@ function ProdGest() {
       );
 
       const productList = searchRes.data.results;
+      console.log(searchRes.data);
       setHasSearched(true);
       setHasQueried(true);
       console.log("📦 Product Results:", productList);
-      setResponse(productList || []);
+      setResponse(searchRes.data);
       setOriginalPrompt(promptText);
       setText("");
     } catch (err) {
@@ -86,7 +87,7 @@ function ProdGest() {
           fontSize: "60px",
           padding: "0px",
           textAlign: "center",
-          color: "#fff085",
+          color: "#FFB4B4",
         }}
       >
         ProdGestAI
@@ -96,10 +97,16 @@ function ProdGest() {
           <div className="audio-response-container">
             <div className="image-audio-container" style={{}}>
               {/*<ImageUpload onImageSelect={setImageFile} />*/}
-              <AudioRecord onTranscriptionReady={handleTranscription} />
+              <AudioRecord
+                onTranscriptionReady={handleTranscription}
+                customStyle={{ background: "#FFB4B4" }}
+              />
             </div>
             <div className="gradient-border-wrapper">
-              <div className="structured-response-container">
+              <div
+                className="structured-response-container"
+                style={{ background: "#FFB4B4" }}
+              >
                 <h3
                   style={{
                     textAlign: "left",
@@ -166,13 +173,14 @@ function ProdGest() {
               onChange={(event) => setText(event.target.value.toString())}
               required
               className="query-input-text-containter"
+              style={{ background: "#FFB4B4" }}
             />
             <SendIcon
               onClick={() => queryResponse()}
               className="query-submit-button"
               sx={{
                 fontSize: 40,
-                color: "#E9F5BE",
+                color: "#FFB4B4",
                 textShadow: "2px 2px 5px rgba(0, 0, 0, 0.8)",
                 filter: "drop-shadow(2px 3px 3px rgba(0, 0, 0, 0.8))",
               }}

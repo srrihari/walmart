@@ -59,7 +59,8 @@ function App() {
           <Route path="/familydashboard" element={<FamilyDashboard />} />
           <Route path="/tastiai" element={<TastiAi />} />
           <Route path="/prodgest" element={<ProdGest />} />
-          <Route path="/prodoubt" element={<ProDoubt />} />
+          <Route path="/product/:category/:id/faq" element={<ProDoubt />} />
+
           <Route path="/imagomart" element={<ImagoMart />} />
         </Routes>
       </AuthProvider>

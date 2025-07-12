@@ -1,12 +1,19 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 function MealResponse({ response, onRegenerate, onConfirm, scrollRef }) {
   const [confirmed, setConfirmed] = useState(false);
-  const [ingredients, setIngredients] = useState(null);
-  const [groceryMatches, setGroceryMatches] = useState([]);
+  const [showCheckCart, setShowCheckCart] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [showToast, setShowToast] = useState(false);
+  const navigate = useNavigate();
+
   useEffect(() => {
     setConfirmed(false);
-    setIngredients(null);
+    setShowCheckCart(false);
+    setLoading(false);
+    setShowToast(false);
     setTimeout(() => {
       if (scrollRef?.current) {
         scrollRef.current.scrollTo({ top: 0, behavior: "smooth" });
@@ -15,9 +22,9 @@ function MealResponse({ response, onRegenerate, onConfirm, scrollRef }) {
       }
     }, 100);
   }, [response]);
+
   if (!response) return null;
 
-  // Try parsing the response as JSON
   let parsed;
   try {
     parsed = typeof response === "string" ? JSON.parse(response) : response;
@@ -28,43 +35,106 @@ function MealResponse({ response, onRegenerate, onConfirm, scrollRef }) {
   const { meal_plan, ingredients: ingr } = parsed;
 
   const handleYes = async () => {
-    setConfirmed(true);
-    setIngredients(ingr);
+    setLoading(true);
 
-    if (typeof onConfirm === "function") {
-      onConfirm(ingr); // optional: pass ingredients to parent if needed
+    const userId = localStorage.getItem("userId");
+    if (!userId) {
+      alert("Please log in to add items to your cart.");
+      setLoading(false);
+      return;
     }
 
-    // 🔁 Send to backend
     try {
-      const res = await fetch("http://localhost:3001/api/grocery-search", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ingredients: ingr }),
+      const res = await axios.post("http://localhost:3001/api/grocery-search", {
+        ingredients: ingr,
       });
 
-      const data = await res.json();
-      console.log("🛒 Grocery Matches:", data.matches);
-      setGroceryMatches(data.matches || []);
+      const matches = res.data?.matches || [];
+      console.log("unfiltered:", matches.length);
+      // ✅ Remove duplicates and null products
+      const uniqueIds = new Set();
+      const validMatches = matches.filter((match) => {
+        const p = match.product;
+        if (!p || uniqueIds.has(p.id)) return false;
+        uniqueIds.add(p.id);
+        return true;
+      });
+      console.log("Filtered", validMatches.length);
+      if (validMatches.length === 0) {
+        console.warn("⚠️ No valid products found.");
+        setLoading(false);
+        return;
+      }
 
-      // You can also store the matches in state to display (optional)
-      // setMatchedProducts(data.matches);
-    } catch (error) {
-      console.error("❌ Error fetching groceries:", error);
+      await Promise.all(
+        validMatches.map(async (match) => {
+          const item = match.product;
+          const category = item.category?.toLowerCase() || "foodgroceries";
+          try {
+            await axios.post("http://localhost:3000/cart/add", {
+              user_id: parseInt(userId),
+              category,
+              product_id: item.id,
+              quantity: 1,
+            });
+          } catch (err) {
+            console.error("❌ Failed to add:", item.name, err);
+          }
+        })
+      );
+
+      setConfirmed(true);
+      setShowCheckCart(true);
+      setShowToast(true);
+      setTimeout(() => setShowToast(false), 3000);
+    } catch (err) {
+      console.error("❌ Error adding to cart:", err);
+    } finally {
+      setLoading(false);
     }
+
+    if (typeof onConfirm === "function") onConfirm(ingr);
   };
 
   const handleNo = () => {
     setConfirmed(false);
-    setIngredients(null);
-    setGroceryMatches([]);
-    if (typeof onRegenerate === "function") {
-      onRegenerate(); // parent triggers new plan
-    }
+    setShowCheckCart(false);
+    setLoading(false);
+    if (typeof onRegenerate === "function") onRegenerate();
   };
 
   return (
-    <div className="structured-response">
+    <div className="structured-response" style={{ position: "relative" }}>
+      {/* ✅ Toast */}
+      {showToast && (
+        <div
+          style={{
+            position: "fixed",
+            bottom: "30px",
+            left: "50%",
+            transform: "translateX(-50%)",
+            backgroundColor: "#28a745",
+            color: "white",
+            padding: "12px 24px",
+            borderRadius: "10px",
+            fontSize: "16px",
+            fontWeight: "bold",
+            boxShadow: "0 0 10px rgba(0,0,0,0.2)",
+            animation: "slideUpFade 0.4s ease forwards",
+            zIndex: 9999,
+          }}
+        >
+          ✅ Items added to your cart!
+        </div>
+      )}
+
+      <style>{`
+        @keyframes slideUpFade {
+          0% { transform: translate(-50%, 20px); opacity: 0; }
+          100% { transform: translate(-50%, 0); opacity: 1; }
+        }
+      `}</style>
+
       {!confirmed && meal_plan && (
         <>
           <h3
@@ -81,12 +151,7 @@ function MealResponse({ response, onRegenerate, onConfirm, scrollRef }) {
           </h3>
 
           {Object.entries(meal_plan).map(([day, meals]) => (
-            <div
-              key={day}
-              style={{
-                marginBottom: "1rem",
-              }}
-            >
+            <div key={day} style={{ marginBottom: "1rem" }}>
               <center>
                 <h4
                   style={{
@@ -94,9 +159,6 @@ function MealResponse({ response, onRegenerate, onConfirm, scrollRef }) {
                     fontSize: "1.5rem",
                     color: "#4B4B4B",
                     fontFamily: '"Savate", sans-serif',
-                    fontOpticalSizing: "auto",
-                    fontWeight: "700",
-                    fontStyle: "normal",
                     marginTop: "25px",
                   }}
                 >
@@ -116,7 +178,6 @@ function MealResponse({ response, onRegenerate, onConfirm, scrollRef }) {
                     <strong
                       style={{
                         fontFamily: '"Courgette", cursive',
-                        fontStyle: "normal",
                         color: "#4B352A",
                         fontSize: "20px",
                       }}
@@ -126,9 +187,7 @@ function MealResponse({ response, onRegenerate, onConfirm, scrollRef }) {
                     <strong
                       style={{
                         fontFamily: '"Advent Pro", sans-serif',
-                        fontOpticalSizing: "auto",
                         fontWeight: 700,
-                        fontStyle: "normal",
                         fontSize: "20px",
                         color: "#B22222",
                       }}
@@ -140,7 +199,21 @@ function MealResponse({ response, onRegenerate, onConfirm, scrollRef }) {
               </ul>
             </div>
           ))}
-
+          {loading && (
+            <p
+              style={{
+                marginTop: "10px",
+                color: "#444",
+                fontWeight: "bold",
+                fontSize: "18px",
+                fontFamily: "sans-serif",
+                textAlign: "center",
+              }}
+            >
+              🍳 Let’s cook your meal... Hang tight while we add your items to
+              the cart!
+            </p>
+          )}
           <div
             style={{
               display: "flex",
@@ -153,7 +226,6 @@ function MealResponse({ response, onRegenerate, onConfirm, scrollRef }) {
               style={{
                 fontFamily: '"Tagesschrift", system-ui',
                 fontWeight: 400,
-                fontStyle: "normal",
                 fontSize: "30px",
               }}
             >
@@ -162,6 +234,7 @@ function MealResponse({ response, onRegenerate, onConfirm, scrollRef }) {
             <div>
               <button
                 onClick={handleYes}
+                disabled={loading}
                 style={{
                   marginRight: "1rem",
                   padding: "6px 12px",
@@ -172,21 +245,23 @@ function MealResponse({ response, onRegenerate, onConfirm, scrollRef }) {
                   fontSize: "1.2rem",
                   fontWeight: 500,
                   boxShadow: "4px 4px 0px #222",
-                  cursor: "pointer",
+                  cursor: loading ? "not-allowed" : "pointer",
                   transition: "transform 0.1s ease",
                 }}
                 onMouseEnter={(e) => {
-                  e.target.style.transform = "translate(-2px, -2px)";
+                  if (!loading)
+                    e.target.style.transform = "translate(-2px, -2px)";
                 }}
                 onMouseLeave={(e) => {
                   e.target.style.transform = "none";
                 }}
               >
-                Yes
+                {loading ? "Processing..." : "Yes"}
               </button>
 
               <button
                 onClick={handleNo}
+                disabled={loading}
                 style={{
                   marginRight: "1rem",
                   padding: "6px 12px",
@@ -197,11 +272,12 @@ function MealResponse({ response, onRegenerate, onConfirm, scrollRef }) {
                   fontSize: "1.2rem",
                   fontWeight: 500,
                   boxShadow: "4px 4px 0px #222",
-                  cursor: "pointer",
+                  cursor: loading ? "not-allowed" : "pointer",
                   transition: "transform 0.1s ease",
                 }}
                 onMouseEnter={(e) => {
-                  e.target.style.transform = "translate(3px, -3px)";
+                  if (!loading)
+                    e.target.style.transform = "translate(3px, -3px)";
                 }}
                 onMouseLeave={(e) => {
                   e.target.style.transform = "none";
@@ -214,79 +290,27 @@ function MealResponse({ response, onRegenerate, onConfirm, scrollRef }) {
         </>
       )}
 
-      {confirmed && ingredients && (
-        <>
-          <h3
-            style={{ fontWeight: "bold", fontSize: "1.3rem", color: "black" }}
-          >
-            🧾 Ingredients You'll Need:
-          </h3>
-          <ul
+      {confirmed && showCheckCart && (
+        <div style={{ textAlign: "center", marginTop: "30px" }}>
+          <p style={{ fontSize: "18px", color: "green" }}>
+            Items have been added to your cart!
+          </p>
+          <button
+            onClick={() => navigate("/cart")}
             style={{
-              marginLeft: "1.5rem",
-              listStyleType: "square",
-              color: "black",
+              padding: "10px 20px",
+              backgroundColor: "#ffa41c",
+              color: "white",
+              border: "none",
+              borderRadius: "8px",
+              fontSize: "16px",
+              cursor: "pointer",
+              fontWeight: "bold",
+              boxShadow: "2px 2px 4px rgba(0, 0, 0, 0.5)",
             }}
           >
-            {ingredients.map((item, idx) => (
-              <li key={idx}>{item}</li>
-            ))}
-          </ul>
-        </>
-      )}
-      {confirmed && groceryMatches.length > 0 && (
-        <div style={{ marginTop: "2rem" }}>
-          <h3 style={{ fontSize: "1.5rem", color: "#333" }}>
-            🛍️ Matching Grocery Items
-          </h3>
-          <table
-            style={{
-              width: "100%",
-              borderCollapse: "collapse",
-              marginTop: "10px",
-            }}
-          >
-            <thead>
-              <tr style={{ backgroundColor: "#f0e68c" }}>
-                <th style={{ border: "1px solid #ddd", padding: "8px" }}>
-                  Ingredient
-                </th>
-                <th style={{ border: "1px solid #ddd", padding: "8px" }}>
-                  Product Name
-                </th>
-                <th style={{ border: "1px solid #ddd", padding: "8px" }}>
-                  Image
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {groceryMatches.map((match, idx) => (
-                <tr key={idx} style={{ borderBottom: "1px solid #ccc" }}>
-                  <td style={{ border: "1px solid #ddd", padding: "8px" }}>
-                    {match.ingredient}
-                  </td>
-                  <td style={{ border: "1px solid #ddd", padding: "8px" }}>
-                    {match.product ? match.product.name : "❌ Not Found"}
-                  </td>
-                  <td style={{ border: "1px solid #ddd", padding: "8px" }}>
-                    {match.product?.image_url ? (
-                      <img
-                        src={match.product.image_url}
-                        alt={match.product.name}
-                        style={{
-                          height: "50px",
-                          borderRadius: "8px",
-                          objectFit: "cover",
-                        }}
-                      />
-                    ) : (
-                      "—"
-                    )}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+            🛒 Check Cart
+          </button>
         </div>
       )}
     </div>

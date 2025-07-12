@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 import { FaCartPlus } from "react-icons/fa";
 import { IoVideocam } from "react-icons/io5";
-
+import { FaQuestionCircle } from "react-icons/fa";
 export default function ProductViewPg() {
   const navigate = useNavigate();
   const { category, id } = useParams();
@@ -135,31 +135,59 @@ export default function ProductViewPg() {
             ? "Free Shipping Available"
             : "No Free Shipping"}
         </p>
-
-        <button
-          onClick={handleAddToCart}
-          disabled={!product.in_stock || adding}
-          style={{
-            marginTop: "20px",
-            padding: "12px 24px",
-            fontSize: "16px",
-            backgroundColor: "#ffa41c",
-            color: "white",
-            border: "none",
-            borderRadius: "8px",
-            cursor: product.in_stock ? "pointer" : "not-allowed",
-            fontWeight: "bold",
-          }}
-        >
-          {adding ? (
-            "Adding..."
-          ) : (
-            <>
-              <FaCartPlus style={{ marginRight: "8px" }} />
-              Add to Cart
-            </>
-          )}
-        </button>
+        <div style={{ display: "flex", gap: "20px" }}>
+          <button
+            onClick={handleAddToCart}
+            disabled={!product.in_stock || adding}
+            style={{
+              marginTop: "20px",
+              padding: "12px 24px",
+              fontSize: "16px",
+              backgroundColor: "#ffa41c",
+              color: "white",
+              border: "none",
+              borderRadius: "8px",
+              cursor: product.in_stock ? "pointer" : "not-allowed",
+              fontWeight: "bold",
+            }}
+          >
+            {adding ? (
+              "Adding..."
+            ) : (
+              <>
+                <FaCartPlus style={{ marginRight: "8px" }} />
+                Add to Cart
+              </>
+            )}
+          </button>
+          <Link to={`/product/${category}/${id}/faq`}>
+            <button
+              style={{
+                marginTop: "20px",
+                padding: "12px 24px",
+                fontSize: "16px",
+                backgroundColor: "#ff511cff",
+                color: "white",
+                border: "none",
+                borderRadius: "8px",
+                cursor: product.in_stock ? "pointer" : "not-allowed",
+                fontWeight: "bold",
+              }}
+            >
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  gap: "5px",
+                }}
+              >
+                <FaQuestionCircle />
+                ProDoubt
+              </div>
+            </button>
+          </Link>
+        </div>
       </div>
       <button
         onClick={() => {

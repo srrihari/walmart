@@ -1,26 +1,27 @@
 import { useState, useEffect } from "react";
-import { RxSpeakerLoud } from "react-icons/rx";
+import { Atom } from "react-loading-indicators";
+import { useNavigate } from "react-router-dom";
+import ProductCard from "../components/ProductCard";
 
 const apiKey = import.meta.env.VITE_SARVAM_API_KEY;
 
 function QueryResponse(props) {
   const [responses, setResponses] = useState(props.response || "");
-  const [transcript, setTranscript] = useState(props.transcript || "");
-  const [speaker, setSpeaker] = useState(false);
-  const [clear, setClear] = useState(false);
   const [translatedText, setTranslatedText] = useState("");
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const isProductResponse =
     responses && typeof responses === "object" && responses.results;
 
   useEffect(() => {
     async function maybeTranslate() {
+      setLoading(true);
       const text =
         typeof props.response === "string"
           ? props.response
           : JSON.stringify(props.response);
       setResponses(props.response);
-      setTranscript(props.transcript || "");
 
       if (props.lang && props.lang !== "en-IN") {
         try {
@@ -46,28 +47,55 @@ function QueryResponse(props) {
       } else {
         setTranslatedText(text);
       }
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      setLoading(false); // End loading
     }
 
     maybeTranslate();
-  }, [props.response, props.transcript, props.lang]);
+  }, [props.response, props.lang]);
 
-  const handleTTS = async () => {
+  // ✅ Add to cart
+  const handleAddToCart = async (product, rawCategory) => {
+    const userId = localStorage.getItem("userId");
+    if (!userId) {
+      alert("Please log in to add items to your cart.");
+      return;
+    }
+    const mapCategory = (category) => {
+      const lower = category.toLowerCase();
+      const map = {
+        groceries: "foodgroceries",
+        school_utensils: "schoolutensils",
+        vehicle_care: "vehiclecare",
+        body_care_diet: "bodycarediet",
+        cloth_accessories: "cloth",
+      };
+      return map[lower] || lower;
+    };
+
+    const category = mapCategory(rawCategory);
     try {
-      const res = await fetch("http://localhost:3001/tts", {
+      await fetch("http://localhost:3000/cart/add", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          text: translatedText,
-          target_language_code: props.lang,
+          user_id: parseInt(userId),
+          category,
+          product_id: product.id,
+          quantity: 1,
         }),
       });
-      const blob = await res.blob();
-      const url = URL.createObjectURL(blob);
-      const audio = new Audio(url);
-      audio.play();
+
+      alert("Item added to cart!");
     } catch (err) {
-      console.error("TTS failed", err);
+      console.error("Failed to add to cart:", err);
+      alert("Error adding to cart");
     }
+  };
+
+  // ✅ Navigate to product view
+  const handleProductClick = (product, category) => {
+    navigate(`/product/${category}/${product.id}`);
   };
 
   return (
@@ -75,94 +103,33 @@ function QueryResponse(props) {
       className="query-response-container"
       style={{ width: "800px", height: "500px" }}
     >
-      {/* Transcription Box */}
-      {props.transcription && (
-        <div
-          style={{
-            backgroundColor: "#E14434",
-            padding: "10px",
-            marginBottom: "10px",
-            borderRadius: "10px",
-            color: "#FFD6B9",
-            fontStyle: "italic",
-          }}
-        >
-          You said: {props.transcription}
-        </div>
-      )}
-
-      {/* Assistant Header + Buttons */}
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          gap: "10px",
-          paddingTop: "0px",
-        }}
-      >
-        <h3 style={{ color: "#FFE3DD", textAlign: "left", fontSize: "20px" }}>
-          Assistant Response
-        </h3>
-        <button
-          style={{
-            background: "none",
-            border: "0px",
-            padding: "0px",
-            marginTop: "5px",
-          }}
-        >
-          <RxSpeakerLoud
-            onMouseOver={() => setSpeaker(true)}
-            onMouseOut={() => setSpeaker(false)}
-            onClick={handleTTS}
-            style={{
-              color: "white",
-              fontSize: "20px",
-              cursor: "pointer",
-              transform: speaker ? "scale(1.2)" : "scale(1)",
-            }}
-          />
-        </button>
-        <h4
-          onMouseOver={() => setClear(true)}
-          onMouseOut={() => setClear(false)}
-          onClick={() => setResponses("")}
-          style={{
-            fontFamily: "'Raleway Dots', sans-serif",
-            fontWeight: clear ? "600" : "400",
-            fontStyle: "normal",
-            color: "#edcec2",
-            fontSize: "20px",
-            marginLeft: "auto",
-            cursor: "pointer",
-          }}
-        >
-          clear
-        </h4>
-      </div>
-
-      {/* Divider */}
-      <hr
-        style={{
-          border: "none",
-          borderTop: "2px solid #E17564",
-          margin: "5px 0",
-          width: "100%",
-        }}
-      />
-
-      {/* RESPONSE CONTAINER */}
       <div
         style={{
           backgroundColor: "#481f1f",
           padding: "20px",
           borderRadius: "12px",
           marginTop: "10px",
-          maxHeight: "420px",
+          height: "420px",
           overflowY: "auto",
         }}
       >
-        {isProductResponse ? (
+        {loading ? (
+          <div
+            style={{
+              minHeight: "300px",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <Atom
+              color="#ffffff"
+              size="large"
+              text="Loading..."
+              textColor="#ffffff"
+            />
+          </div>
+        ) : isProductResponse ? (
           <div
             style={{
               display: "flex",
@@ -171,68 +138,48 @@ function QueryResponse(props) {
               justifyContent: "center",
             }}
           >
-            {responses.results.map((item) => (
-              <div
-                key={item.id}
-                style={{
-                  backgroundColor: "#2e1b17",
-                  borderRadius: "12px",
-                  padding: "12px",
-                  width: "230px",
-                  boxShadow: "0 2px 6px rgba(0,0,0,0.3)",
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  textAlign: "center",
-                  overflowWrap: "break-word",
-                  wordWrap: "break-word",
-                }}
-              >
-                <img
-                  src={`https://images.weserv.nl/?url=${encodeURIComponent(
-                    item.image_url
-                  )}`}
-                  alt={item.name}
-                  onError={(e) => {
-                    console.log("Image failed to load:", item.image_url);
-                    e.target.src =
-                      "https://via.placeholder.com/230x150?text=No+Image";
-                  }}
-                  style={{
-                    width: "100%",
-                    height: "150px",
-                    objectFit: "contain",
-                    borderRadius: "8px",
-                    marginBottom: "10px",
-                  }}
-                />
+            {responses.results.map((item) => {
+              const matched = responses.matched?.table || "electronics";
+              const category = matched;
 
-                <h4
-                  style={{
-                    color: "#fdd3cb",
-                    fontWeight: "600",
-                    fontSize: "15px",
-                    marginBottom: "8px",
-                  }}
+              return (
+                <div
+                  key={item.id}
+                  onClick={() => handleProductClick(item, category)}
+                  style={{ cursor: "pointer" }}
                 >
-                  {item.name}
-                </h4>
-                <p
-                  style={{
-                    color: "#f4b9aa",
-                    fontWeight: "500",
-                    marginBottom: "4px",
-                  }}
-                >
-                  ₹{item.price}
-                </p>
-                <p style={{ color: "#eec6bb", fontSize: "12px" }}>
-                  Category: {item.sub_category}
-                </p>
-              </div>
-            ))}
+                  <ProductCard
+                    image={item.image_url}
+                    alt={item.name}
+                    price={`₹${item.price}`}
+                    originalPrice={`₹${item.original_price}`}
+                    savings={`₹${(item.original_price - item.price).toFixed(
+                      2
+                    )}`}
+                    title={item.name}
+                    rating={Math.round(item.rating)}
+                    reviews={item.reviews}
+                    membershipNote={
+                      item.free_shipping ? "Free Shipping Available" : ""
+                    }
+                    availability={[
+                      item.in_stock
+                        ? "Available <strong>in stock</strong>"
+                        : "Out of stock",
+                      item.free_shipping
+                        ? "Free <strong>shipping</strong>"
+                        : "Shipping not available",
+                    ]}
+                    onAddToCart={(e) => {
+                      e.stopPropagation(); // so that it doesn't trigger the product click
+                      handleAddToCart(item, category);
+                    }}
+                  />
+                </div>
+              );
+            })}
           </div>
-        ) : (
+        ) : translatedText && translatedText !== "null" ? (
           <div
             style={{
               color: "#ffd9c8",
@@ -241,9 +188,9 @@ function QueryResponse(props) {
               whiteSpace: "pre-wrap",
             }}
           >
-            {translatedText || responses}
+            {translatedText}
           </div>
-        )}
+        ) : null}
       </div>
     </div>
   );
