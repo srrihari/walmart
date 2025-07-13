@@ -87,7 +87,7 @@ export default function Cart() {
         key: "rzp_test_wKMgVo1tLjei5e", // Replace with your Razorpay Test Key
         amount,
         currency,
-        name: "Walmart-BrawlDevs",
+        name: "BrawlDevs",
         description: "Payment for items",
         order_id,
         handler: async function (response) {
