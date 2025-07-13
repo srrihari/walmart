@@ -36,7 +36,7 @@ function ProDoubt() {
   return (
     <div
       className="app-wrapper"
-      style={{ padding: "20px", fontFamily: "sans-serif", marginTop: "100px" }}
+      style={{ padding: "20px", fontFamily: "sans-serif", marginTop: "75px" }}
     >
       <h1
         style={{
@@ -66,7 +66,10 @@ function ProDoubt() {
           <div style={{ marginBottom: "20px", textAlign: "center" }}>
             <AudioRecord
               onTranscriptionReady={handleTranscription}
-              customStyle={{ background: "#90D1CA" }}
+              customStyle={{
+                background: "#90D1CA",
+                boxShadow: "5px 10px 8px 5px rgba(0, 0, 0, 0.7)",
+              }}
             />
           </div>
 
@@ -90,7 +93,14 @@ function ProDoubt() {
           </div>
         </div>
 
-        <div style={{ display: "flex", gap: "10px" }}>
+        <div
+          style={{
+            display: "flex",
+            gap: "10px",
+            width: "700px",
+            marginLeft: "500px",
+          }}
+        >
           <input
             className="input-text"
             type="text"
@@ -100,12 +110,14 @@ function ProDoubt() {
             style={{
               flex: 1,
               padding: "10px",
+              width: "100px",
               borderRadius: "8px",
               fontSize: "16px",
               border: "1px solid #ccc",
               background: "#90D1CA",
               border: "3px solid black",
-              height: "40px",
+              height: "35px",
+              boxShadow: "5px 10px 8px 5px rgba(0, 0, 0, 0.7)",
             }}
           />
           <SendIcon

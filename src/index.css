@@ -410,7 +410,7 @@
   height: 50px;
   width: 50px;
 }
-.query-input-text-containter {
+.query-input-text-container {
   background: #fff085;
   border: 3px solid black;
   border-radius: 20px;
@@ -556,4 +556,7 @@ li {
   margin-bottom: 8px;
   text-indent: -1.2em;
   padding-left: 1.2em;
+}
+.input-text {
+  width: 500px;
 }

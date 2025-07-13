@@ -172,7 +172,7 @@ function ProdGest() {
               value={text}
               onChange={(event) => setText(event.target.value.toString())}
               required
-              className="query-input-text-containter"
+              className="query-input-text-container"
               style={{ background: "#FFB4B4" }}
             />
             <SendIcon

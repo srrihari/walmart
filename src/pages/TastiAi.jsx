@@ -80,7 +80,12 @@ function TastiAi() {
           <div className="audio-response-container">
             <div className="image-audio-container">
               {/*<ImageUpload onImageSelect={setImageFile} />*/}
-              <AudioRecord onTranscriptionReady={handleTranscription} />
+              <AudioRecord
+                onTranscriptionReady={handleTranscription}
+                customStyle={{
+                  boxShadow: "5px 10px 8px 5px rgba(0, 0, 0, 0.7)",
+                }}
+              />
             </div>
             <div className="structured-response-container">
               <h3
@@ -135,7 +140,7 @@ function TastiAi() {
               value={text}
               onChange={(event) => setText(event.target.value.toString())}
               required
-              className="query-input-text-containter"
+              className="query-input-text-container"
             />
             <SendIcon
               onClick={() => queryResponse()}
