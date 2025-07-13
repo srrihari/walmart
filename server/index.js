@@ -70,7 +70,7 @@ app.get("/foodgroceries", async (req, res) => {
 
   if (id) {
     // Fetch single product by ID
-    query = query.eq("id", id);
+    query = query.eq("id", Number(id));
     const { data, error, count } = await query;
     if (error) return res.status(500).json({ error: error.message });
     return res.json({ data, total: count });

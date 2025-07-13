@@ -38,6 +38,7 @@ export default function Cart() {
             }
           })
         );
+        console.log(enrichedItems);
 
         setCartItems(enrichedItems);
       } catch (err) {
@@ -104,49 +105,52 @@ export default function Cart() {
             flex: 3,
           }}
         >
-          {cartItems.map((item) => {
-            const product = item.productDetails || {};
-            return (
-              <div key={item.id} className="product-card">
-                <img
-                  src={product.image_url}
-                  alt={product.name}
-                  className="product-image"
-                  style={{
-                    width: "200px",
-                    height: "200px",
-                    objectFit: "cover",
-                  }}
-                />
+          {cartItems
+            .filter((item) => item.productDetails) // 👈 Only include items with valid productDetails
+            .map((item) => {
+              const product = item.productDetails;
 
-                <button
-                  className="add-button"
-                  style={{
-                    backgroundColor: "red",
-                    color: "white",
-                    marginTop: "10px",
-                  }}
-                  onClick={() => handleRemove(item.id)}
-                >
-                  Remove
-                </button>
+              return (
+                <div key={item.id} className="product-card">
+                  <img
+                    src={product.image_url}
+                    alt={product.name}
+                    className="product-image"
+                    style={{
+                      width: "200px",
+                      height: "200px",
+                      objectFit: "cover",
+                    }}
+                  />
 
-                <div className="price-row">
-                  <span className="price">Rs.{product.price}</span>
+                  <button
+                    className="add-button"
+                    style={{
+                      backgroundColor: "red",
+                      color: "white",
+                      marginTop: "10px",
+                    }}
+                    onClick={() => handleRemove(item.id)}
+                  >
+                    Remove
+                  </button>
+
+                  <div className="price-row">
+                    <span className="price">Rs.{product.price}</span>
+                  </div>
+
+                  <p className="product-title">{product.name}</p>
+
+                  <div className="rating">
+                    <span className="stars">
+                      {"★".repeat(Math.round(product.rating || 0))}
+                      {"☆".repeat(5 - Math.round(product.rating || 0))}
+                    </span>
+                    <span className="reviews">({product.reviews || 0})</span>
+                  </div>
                 </div>
-
-                <p className="product-title">{product.name}</p>
-
-                <div className="rating">
-                  <span className="stars">
-                    {"★".repeat(Math.round(product.rating || 0))}
-                    {"☆".repeat(5 - Math.round(product.rating || 0))}
-                  </span>
-                  <span className="reviews">({product.reviews || 0})</span>
-                </div>
-              </div>
-            );
-          })}
+              );
+            })}
         </div>
 
         {/* Right: Checkout Box */}

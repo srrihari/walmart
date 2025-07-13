@@ -18,6 +18,7 @@ export default function CallIframe() {
 
     setAdding(true);
 
+    console.log(product);
     let mappedCategory = product.category;
     if (mappedCategory === "school_utensils") mappedCategory = "schoolutensils";
     else if (mappedCategory === "Vehicle_care") mappedCategory = "vehiclecare";

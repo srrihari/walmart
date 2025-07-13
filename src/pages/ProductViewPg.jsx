@@ -16,7 +16,8 @@ export default function ProductViewPg() {
         const res = await axios.get(
           `http://localhost:3000/product/${category}/${id}`
         );
-        setProduct(res.data);
+        setProduct({ ...res.data, category: category });
+        console.log(res.data);
       } catch (err) {
         console.error("Product fetch error:", err);
       }
