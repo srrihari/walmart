@@ -3,6 +3,7 @@ import { config } from "dotenv";
 import { createClient } from "@supabase/supabase-js";
 import cors from "cors";
 import axios from "axios";
+import Razorpay from "razorpay";
 
 config();
 
@@ -25,6 +26,38 @@ const supabase = createClient(
   process.env.SUPABASE_URL,
   process.env.SUPABASE_KEY
 );
+
+const razorpay = new Razorpay({
+  key_id: process.env.RAZORPAY_KEY_ID, // use test key from Razorpay dashboard
+  key_secret: process.env.RAZORPAY_KEY_SECRET,
+});
+
+app.post("/create-order/:userId", async (req, res) => {
+  const { items } = req.body;
+
+  if (!items || items.length === 0) {
+    return res.status(400).json({ error: "Cart is empty." });
+  }
+
+  const totalAmount = items.reduce(
+    (sum, item) => sum + item.quantity * item.price,
+    0
+  );
+
+  const orderOptions = {
+    amount: totalAmount * 100, // amount in paise
+    currency: "INR",
+    receipt: `receipt_order_${Date.now()}`,
+  };
+
+  try {
+    const order = await razorpay.orders.create(orderOptions);
+    res.json({ order });
+  } catch (err) {
+    console.error("Razorpay order creation failed:", err);
+    res.status(500).json({ error: "Failed to create Razorpay order" });
+  }
+});
 
 app.get("/", (req, res) => {
   res.send(`Server Running...`);
@@ -410,6 +443,9 @@ app.delete("/cart/:cartItemId", async (req, res) => {
 app.post("/checkout/:userId", async (req, res) => {
   const { userId } = req.params;
   const { items } = req.body;
+  const { payment } = req.body;
+  console.log("Razorpay payment received:", payment);
+  // You can optionally verify signature here if needed
 
   if (!items || items.length === 0) {
     return res.status(400).json({ error: "Cart is empty." });
