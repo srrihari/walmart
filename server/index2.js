@@ -587,7 +587,8 @@ app.post("/api/product-search", async (req, res) => {
     let query = supabase
       .from(table_name)
       .select("*")
-      .ilike("sub_category", `%${sub_category.trim().toLowerCase()}%`);
+      .ilike("sub_category", `%${sub_category.trim().toLowerCase()}%`)
+      .not("price", "is", null);
     if (budget) {
       query = query.lte("price", budget); // ✅ UPDATED: price is double precision
     }
