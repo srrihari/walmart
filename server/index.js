@@ -44,8 +44,10 @@ app.post("/create-order/:userId", async (req, res) => {
     0
   );
 
+  const amountInPaise = Math.round(totalAmount * 100); // ✅ ensure integer
+
   const orderOptions = {
-    amount: totalAmount * 100, // amount in paise
+    amount: amountInPaise,
     currency: "INR",
     receipt: `receipt_order_${Date.now()}`,
   };
