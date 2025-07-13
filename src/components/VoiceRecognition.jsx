@@ -29,7 +29,10 @@ const FloatingVoiceButton = () => {
         });
 
         const data = await response.json();
-        const command = data.transcription?.toLowerCase();
+        const command = data.transcription
+          ?.toLowerCase()
+          .replace(/[^\w\s]/gi, "")
+          .trim();
         console.log("🎙️ You said:", command);
         handleCommand(command);
       } catch (err) {
@@ -112,7 +115,23 @@ const FloatingVoiceButton = () => {
       }
       return;
     }
-
+    if (command.includes("checkout") || command.includes("check out")) {
+      if (location.pathname === "/cart") {
+        const checkoutBtn = document.getElementById("checkout-button");
+        if (checkoutBtn) {
+          if (checkoutBtn.disabled) {
+            alert("🛒 Please add something to the cart to checkout.");
+          } else {
+            checkoutBtn.click();
+          }
+        } else {
+          alert("⚠️ Checkout button not found.");
+        }
+      } else {
+        alert("📦 You are not in the cart. Say 'go to cart' and try again.");
+      }
+      return;
+    }
     // 🧭 Only allow navigation if NOT a product command
     if (navMatch) {
       navigate(navMatch.path);
@@ -134,7 +153,16 @@ const FloatingVoiceButton = () => {
           height: 60,
           fontSize: 24,
           cursor: "pointer",
+          border: "3px solid black",
           boxShadow: "0 4px 8px rgba(0,0,0,0.3)",
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.transform = "translateY(-5px)";
+          e.currentTarget.style.boxShadow = "0 10px 20px rgba(0,0,0,0.4)";
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.transform = "translateY(0)";
+          e.currentTarget.style.boxShadow = "0 6px 12px rgba(0,0,0,0.3)";
         }}
         title="Click and speak command"
       >

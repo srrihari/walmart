@@ -176,6 +176,7 @@ export default function Cart() {
             </span>
           </p>
           <button
+            id="checkout-button"
             onClick={handleCheckout}
             style={{
               marginTop: "20px",
