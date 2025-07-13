@@ -175,6 +175,7 @@ export default function Profile() {
 
         <button
           onClick={handleLogout}
+          id="logout-button"
           className="logout-button profile-button"
           style={{ backgroundColor: "#CB0404" }}
         >

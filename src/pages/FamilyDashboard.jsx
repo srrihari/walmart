@@ -199,6 +199,7 @@ export default function FamilyDashboard() {
                   cursor: "pointer",
                   fontSize: "14px",
                 }}
+                id="show-family-id-button"
               >
                 {showFamilyId ? "Hide Family ID" : "Show Family ID"}
               </button>
@@ -367,6 +368,7 @@ export default function FamilyDashboard() {
           </div>
           <div style={{ textAlign: "center", marginTop: "40px" }}>
             <button
+              id="exit-family-button"
               style={{
                 backgroundColor: "#f44336",
                 color: "white",

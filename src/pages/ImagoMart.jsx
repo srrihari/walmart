@@ -76,7 +76,7 @@ function ImagoMart() {
           color: "#872341",
         }}
       >
-        ProdGestAI
+        ImagoMart
       </h1>
       <div className="ai-query-bot-container" style={{ gap: "10px" }}>
         <div
@@ -118,7 +118,7 @@ function ImagoMart() {
               value={text}
               onChange={(event) => setText(event.target.value)}
               required
-              className="query-input-text-containter"
+              className="query-input-text-container"
               style={{ marginLeft: "95px", background: "#872341" }}
             />
             <SendIcon

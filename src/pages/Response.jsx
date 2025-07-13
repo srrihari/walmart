@@ -108,8 +108,8 @@ function QueryResponse(props) {
           backgroundColor: "#481f1f",
           padding: "20px",
           borderRadius: "12px",
-          marginTop: "10px",
-          height: "420px",
+          marginTop: "5px",
+          height: "465px",
           overflowY: "auto",
         }}
       >

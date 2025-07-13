@@ -132,6 +132,42 @@ const FloatingVoiceButton = () => {
       }
       return;
     }
+
+    // ✅ Family ID (familydashboard only)
+    if (command.includes("family id") || command.includes("show family id")) {
+      if (location.pathname === "/familydashboard") {
+        const btn = document.getElementById("show-family-id-button");
+        if (btn) btn.click();
+        else alert("🔍 Show Family ID button not found.");
+      } else {
+        alert("🏠 You are not on the family dashboard page.");
+      }
+      return;
+    }
+
+    // ✅ Exit Family (familydashboard only)
+    if (command.includes("exit family")) {
+      if (location.pathname === "/familydashboard") {
+        const btn = document.getElementById("exit-family-button");
+        if (btn) btn.click();
+        else alert("🚪 Exit Family button not found.");
+      } else {
+        alert("🏠 You are not on the family dashboard page.");
+      }
+      return;
+    }
+
+    // ✅ Logout (profile page only)
+    if (command.includes("logout") || command.includes("log out")) {
+      if (location.pathname === "/profile") {
+        const btn = document.getElementById("logout-button");
+        if (btn) btn.click();
+        else alert("🔐 Logout button not found.");
+      } else {
+        alert("🙍‍♂️ You are not on the profile page to logout.");
+      }
+      return;
+    }
     // 🧭 Only allow navigation if NOT a product command
     if (navMatch) {
       navigate(navMatch.path);
