@@ -804,7 +804,8 @@ app.post("/shop", async (req, res) => {
   let query = supabase
     .from(product_table)
     .select("*")
-    .eq("sub_category", sub_category);
+    .eq("sub_category", sub_category)
+    .not("price", "is", null);
 
   let brandNotFound = false;
   let colorNotFound = false;

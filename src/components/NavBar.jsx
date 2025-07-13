@@ -15,6 +15,7 @@ import { FaSearch } from "react-icons/fa";
 
 function NavBar() {
   const loc = useLocation();
+  const [activeNav, setActiveNav] = useState("");
   const isActive = (path) => loc.pathname === path;
   const { user, isAuthenticated } = useContext(AuthContext);
 
@@ -23,11 +24,6 @@ function NavBar() {
   const [visible, setVisible] = useState(true);
   const [prevScroll, setPrevScroll] = useState(window.scrollY);
   const [dropdownOpen, setDropdownOpen] = useState(false);
-
-  const handleNavClick = () => {
-    setExpanded(false);
-    setDropdownOpen(false);
-  };
 
   useEffect(() => {
     if (expanded) {
@@ -48,6 +44,22 @@ function NavBar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [prevScroll]);
 
+  useEffect(() => {
+    // Automatically highlight nav item based on path
+    const path = loc.pathname;
+    if (path.includes("cart")) setActiveNav("cart");
+    else if (path.includes("familydashboard")) setActiveNav("family");
+    else if (path.includes("about")) setActiveNav("about");
+    else if (path.includes("prodgest")) setActiveNav("search");
+    else setActiveNav("");
+  }, [loc.pathname]);
+
+  const handleNavClick = (id = "") => {
+    setExpanded(false);
+    setDropdownOpen(false);
+    setActiveNav(id);
+  };
+
   return (
     <Navbar
       expand="sm"
@@ -67,7 +79,7 @@ function NavBar() {
           <Navbar.Brand
             as={Link}
             to="/"
-            onClick={handleNavClick}
+            onClick={() => handleNavClick("")}
             style={{
               color: "white",
               fontSize: "x-large",
@@ -320,7 +332,9 @@ function NavBar() {
                   flexDirection: "column",
                   alignItems: "center",
                   color: "white",
+                  transition: "background-color 0.3s ease",
                 }}
+                className="nav-hover"
                 to="/familydashboard"
                 as={Link}
               >
