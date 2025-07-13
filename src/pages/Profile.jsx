@@ -89,13 +89,24 @@ export default function Profile() {
         >
           <button
             style={{
-              border: "none",
+              border: "3px solid black",
               backgroundColor: "orange",
               color: "white",
               borderRadius: "20px",
               padding: "6px 14px",
               fontWeight: "bold",
               cursor: "pointer",
+              transition: "all 0.3s ease",
+              transform: "translateY(0)",
+              boxShadow: "0 4px 8px rgba(0,0,0,0.1)",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = "translateY(-3px)";
+              e.currentTarget.style.boxShadow = "0 8px 16px rgba(0,0,0,0.3)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = "translateY(0)";
+              e.currentTarget.style.boxShadow = "0 4px 8px rgba(0,0,0,0.1)";
             }}
             onClick={() => navigate(`/orders`)}
           >
@@ -177,7 +188,37 @@ export default function Profile() {
           onClick={handleLogout}
           id="logout-button"
           className="logout-button profile-button"
-          style={{ backgroundColor: "#CB0404" }}
+          style={{
+            backgroundColor: "#CB0404",
+            color: "white",
+            border: "4px solid black",
+            borderRadius: "30px",
+            padding: "12px 28px",
+            fontSize: "16px",
+            marginTop: "20px",
+            cursor: "pointer",
+            display: "flex",
+            alignItems: "center",
+            gap: "10px",
+            fontWeight: "bold",
+            boxShadow: "0 6px 12px rgba(0, 0, 0, 0.15)",
+            transition: "all 0.2s ease-in-out",
+            transform: "translateY(0)",
+            textAlign: "center",
+            display: "inline-flex", // <-- Important
+            alignItems: "center", // vertically centers icon + text
+            justifyContent: "center",
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.transform = "translateY(-3px)";
+            e.currentTarget.style.boxShadow = "0 10px 20px rgba(0,0,0,0.3)";
+            e.currentTarget.style.backgroundColor = "#b00020"; // Darker red on hover
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.transform = "translateY(0)";
+            e.currentTarget.style.boxShadow = "0 6px 12px rgba(0,0,0,0.15)";
+            e.currentTarget.style.backgroundColor = "#CB0404";
+          }}
         >
           <IoMdLogOut />
           Logout

@@ -214,10 +214,23 @@ export default function Cart() {
               padding: "10px 20px",
               backgroundColor: getTotalCost() === 0 ? "#ccc" : "#4CAF50",
               color: "white",
-              border: "none",
+              border: "3px solid black",
               borderRadius: "5px",
               cursor: getTotalCost() === 0 ? "not-allowed" : "pointer",
               fontSize: "16px",
+              transition: "all 0.3s ease",
+              transform: "translateY(0)",
+              boxShadow: "0 4px 8px rgba(0,0,0,0.2)",
+            }}
+            onMouseEnter={(e) => {
+              if (getTotalCost() > 0) {
+                e.currentTarget.style.transform = "translateY(4px)";
+                e.currentTarget.style.boxShadow = "0 8px 16px rgba(0,0,0,0.6)";
+              }
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = "translateY(0)";
+              e.currentTarget.style.boxShadow = "0 4px 8px rgba(0,0,0,0.2)";
             }}
           >
             Proceed to Checkout

@@ -193,11 +193,20 @@ export default function FamilyDashboard() {
                 onClick={() => setShowFamilyId(!showFamilyId)}
                 style={{
                   backgroundColor: "#eee",
-                  border: "1px solid #ccc",
+                  border: "2px solid #ccc",
                   borderRadius: "8px",
                   padding: "8px 16px",
                   cursor: "pointer",
                   fontSize: "14px",
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.boxShadow =
+                    "0 8px 16px rgba(0,0,0,0.3)";
+                  e.currentTarget.style.border = "2px solid blue";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.boxShadow = "0 4px 8px rgba(0,0,0,0.1)";
+                  e.currentTarget.style.border = "2px solid #ccc";
                 }}
                 id="show-family-id-button"
               >
@@ -236,8 +245,20 @@ export default function FamilyDashboard() {
                   boxShadow: "0 2px 5px rgba(0,0,0,0.1)",
                   cursor: "pointer",
                   transition: "all 0.3s ease",
+                  transform: "translateY(0)",
                 }}
                 onClick={() => handleToggleCard(member.id)}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = "translateY(-5px)";
+                  e.currentTarget.style.boxShadow =
+                    "0 8px 16px rgba(0,0,0,0.5)";
+                  e.currentTarget.style.border = "2px solid blue";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = "translateY(0)";
+                  e.currentTarget.style.boxShadow = "0 4px 8px rgba(0,0,0,0.1)";
+                  e.currentTarget.style.border = "none";
+                }}
               >
                 <h3>{member.id === user.id ? "You" : member.name}</h3>
                 <p>Email: {member.email}</p>
@@ -377,6 +398,19 @@ export default function FamilyDashboard() {
                 borderRadius: "30px",
                 cursor: "pointer",
                 fontSize: "16px",
+                transition: "all 0.3s ease",
+                transform: "translateY(0)",
+                boxShadow: "0 4px 8px rgba(0,0,0,0.1)",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = "translateY(-5px)";
+                e.currentTarget.style.boxShadow = "0 8px 16px rgba(0,0,0,0.5)";
+                e.currentTarget.style.border = "4px solid black";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = "translateY(0)";
+                e.currentTarget.style.boxShadow = "0 4px 8px rgba(0,0,0,0.1)";
+                e.currentTarget.style.border = "none";
               }}
               onClick={handleExitFamily}
             >
