@@ -24,12 +24,15 @@ import TastiAi from "./pages/TastiAi.jsx";
 import ProdGest from "./pages/ProdGest.jsx";
 import ProDoubt from "./pages/ProDoubt.jsx";
 import ImagoMart from "./pages/ImagoMart.jsx";
+import VoiceCommandButton from "./components/VoiceRecognition.jsx";
+import FloatingVoiceButton from "./components/VoiceRecognition.jsx";
 
 function App() {
   return (
     <Router>
       <AuthProvider>
         <NavBar />
+        <FloatingVoiceButton />
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/electronics/:subcategory?" element={<Electronics />} />

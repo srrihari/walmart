@@ -9,6 +9,7 @@ export default function ProductViewPg() {
   const { category, id } = useParams();
   const [product, setProduct] = useState(null);
   const [adding, setAdding] = useState(false);
+  const [previewOpen, setPreviewOpen] = useState(false);
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -25,8 +26,16 @@ export default function ProductViewPg() {
 
     fetchProduct();
   }, [category, id]);
+  useEffect(() => {
+    const handleEsc = (e) => {
+      if (e.key === "Escape") setPreviewOpen(false);
+    };
+    window.addEventListener("keydown", handleEsc);
+    return () => window.removeEventListener("keydown", handleEsc);
+  }, []);
 
   const handleAddToCart = async () => {
+    if (adding) return;
     const userId = localStorage.getItem("userId");
     if (!userId) {
       alert("Please log in to add items to your cart.");
@@ -58,7 +67,31 @@ export default function ProductViewPg() {
       setAdding(false);
     }
   };
+  useEffect(() => {
+    if (!product) return;
 
+    // ✅ Only set voice actions if not already set
+    if (!window.voiceBindingsSet) {
+      window.voiceAddToCart = () => {
+        document.getElementById("voice-add-to-cart")?.click();
+      };
+
+      window.voiceCallDealer = () => {
+        document.getElementById("voice-call-dealer")?.click();
+      };
+
+      window.voiceProductQuery = () => {
+        document.getElementById("voice-query-btn")?.click();
+      };
+
+      window.voiceBindingsSet = true;
+    }
+
+    // ✅ Reset voice commands on page leave
+    return () => {
+      window.voiceBindingsSet = false;
+    };
+  }, [product, category, id, navigate]);
   if (!product) return <div style={{ paddingTop: "100px" }}>Loading...</div>;
 
   return (
@@ -77,7 +110,8 @@ export default function ProductViewPg() {
           src={product.image_url}
           alt={product.name}
           width="350"
-          style={{ borderRadius: "8px" }}
+          style={{ borderRadius: "8px", cursor: "pointer" }}
+          onClick={() => setPreviewOpen(true)}
         />
       </div>
 
@@ -138,6 +172,7 @@ export default function ProductViewPg() {
         </p>
         <div style={{ display: "flex", gap: "20px" }}>
           <button
+            id="voice-add-to-cart"
             onClick={handleAddToCart}
             disabled={!product.in_stock || adding}
             className="prodview-button"
@@ -160,6 +195,7 @@ export default function ProductViewPg() {
           </button>
           <Link to={`/product/${category}/${id}/faq`}>
             <button
+              id="voice-query-btn"
               className="prodview-button"
               style={{
                 marginTop: "20px",
@@ -184,6 +220,7 @@ export default function ProductViewPg() {
         </div>
       </div>
       <button
+        id="voice-call-dealer"
         onClick={() => {
           localStorage.setItem("cammerceProduct", JSON.stringify(product));
           navigate(`/call`);
@@ -197,6 +234,63 @@ export default function ProductViewPg() {
         <IoVideocam style={{ marginRight: "8px" }} />
         Cammerce
       </button>
+      {previewOpen && (
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            width: "100vw",
+            height: "100vh",
+            backgroundColor: "rgba(0, 0, 0, 0.85)",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            zIndex: 10000,
+          }}
+          onClick={() => setPreviewOpen(false)} // close when clicking outside image
+        >
+          <div
+            onClick={(e) => e.stopPropagation()} // prevent closing when clicking image or button
+            style={{ position: "relative" }}
+          >
+            {/* Close Button */}
+            <button
+              onClick={() => setPreviewOpen(false)}
+              style={{
+                position: "absolute",
+                top: "-30px",
+                right: "-30px",
+                backgroundColor: "#fff",
+                color: "#333",
+                border: "none",
+                fontSize: "24px",
+                borderRadius: "50%",
+                width: "40px",
+                height: "40px",
+                cursor: "pointer",
+                boxShadow: "0 2px 6px rgba(0,0,0,0.3)",
+              }}
+            >
+              &times;
+            </button>
+
+            {/* Full Image */}
+            <img
+              src={product.image_url}
+              alt="Preview"
+              style={{
+                width: "400px", // fixed width
+                height: "400px", // fixed height
+                objectFit: "contain",
+                borderRadius: "12px",
+                boxShadow: "0 0 15px rgba(0,0,0,0.4)",
+                backgroundColor: "#fff",
+              }}
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 }
