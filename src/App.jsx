@@ -53,13 +53,13 @@ function App() {
             element={<SchoolUtensils />}
           />
           <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/cart" element={<Cart />} />
+          <Route path="/register" element={<Register />} />
           <Route path="/orders" element={<Orders />} />
-          <Route path="/call" element={<CallIframe />} />
           <Route path="/product/:category/:id" element={<ProductViewPg />} />
           <Route path="/familydashboard" element={<FamilyDashboard />} />
+          <Route path="/call" element={<CallIframe />} />
           <Route path="/tastiai" element={<TastiAi />} />
           <Route path="/prodgest" element={<ProdGest />} />
           <Route path="/product/:category/:id/faq" element={<ProDoubt />} />
